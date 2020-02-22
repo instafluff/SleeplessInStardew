@@ -26,6 +26,9 @@ We built this Stardew Valley Late-Night Get-More-Done Sleep-less Insomniac Produ
 ***Does this affect the in-game events?***
 > Nope!
 
+***What happens if I stay up past 6am?***
+> You will pass out and lose stuff so be careful!
+
 ***Are my stats going to be affected?***
 > Nope! This mod works by simply manipulating the in-game world time and nothing else about your gameplay will be different.
 
