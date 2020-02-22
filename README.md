@@ -1,5 +1,6 @@
 ﻿# SleeplessInStardew
-The Stardew Valley Late-Night Sleep-Whenever-You-Want Mod
+The Stardew Valley Late-Night Get-More-Done Sleepless Insomniac Productivity Powernap Mod!
+Just add this mod and extend your sleep time to 6am instead of 2am.
 
 
 Thank you to all the comfiest holes to helped get started with this Stardew Valley mod!
