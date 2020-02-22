@@ -6,5 +6,7 @@
   "UniqueID": "instafluff.sleeplessinstardew",
   "EntryDll": "SleeplessInStardew.dll",
   "MinimumApiVersion": "2.10.0",
-  "UpdateKeys": []
+  "UpdateKeys": [
+	"GitHub:instafluff/SleeplessInStardew", "Nexus:5445"
+  ]
 }
