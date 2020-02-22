@@ -35,7 +35,7 @@ We built this Stardew Valley Late-Night Get-More-Done Sleep-less Insomniac Produ
 ***Will this work in Multiplayer?***
 > I am planning to add multiplayer-support soon!
 
-
+# Credits
 Thank you to all the comfiest holes to helped get started with this Stardew Valley mod!
 
 **DutchGamer46, ohmyshell, simrose4u, sparky_pugwash, Instafluff, That_MS_Gamer, KappaMangos, wabes1, ecomath328, Instafriend, smilesandteaa, BungalowGlow, Neo_TA, sethorizer, arandomtim, aries4174587, arkore, Ella_Fint, Shaezonai, Wasabi_Cheetah, holloway87, haruhi_mei, cotoli, neniltheelf, WOOKIE_SLAYR, BlundersBlunders, FBoucheros, JoeShimHae, MaryJoStaebler, Stray_Robotics, AntiPixelated, aranhawaii, bryanlrobinson, AmericanVikingJohn, nightsilas, LilyHazel, MrRayKoma, 10TenArt, where_is_laughingman, beingpranjal, petermathews0077, cowraiser3, DevMerlin_, propmand2, cloudhawke13, Korthrun, chiefqueef_88, Quabbe, protopoly_dot_com, silvainius01, talvesdev, NMeuleman, jlengstorf, RyanWarnerCodes, TechHappy, WildGenie, ShinSharkai, EndlessMoonfall, FuriousFur, MusicalBookworm, csharpfritz, dot_commie, Jane_Henry, jamesqquick, Linol_Shadowcat, ChobiLuck, Gilokk0, TheGeekGeneration, davidvkimball, KitAnnLIVE, Little_Bungorf, fetii1, wietlol, stuyksoft, Danachew, swolemaz, malfunct, m00bt, malkalide, brandan_f, TWrongNoTWright, HonestDanGames, Lifesmeaning42, spacey3d, JSP87**
