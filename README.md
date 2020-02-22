@@ -1,7 +1,23 @@
-﻿# SleeplessInStardew
-The Stardew Valley Late-Night Get-More-Done Sleepless Insomniac Productivity Powernap Mod!
+**SleeplessInStardew** The Stardew Valley Late-Night Get-More-Done Sleepless Insomniac Productivity Powernap Mod!
+
 Just add this mod and extend your sleep time to 6am instead of 2am.
 
+# SleeplessInStardew
+We built this Stardew Valley Late-Night Get-More-Done Sleepless Insomniac Productivity Powernap Mod live on Twitch at the Comfy Corner!
+
+## Instafluff ##
+> *Like these projects? The best way to support my open-source projects is by becoming a Comfy Sponsor on GitHub!*
+
+> https://github.com/sponsors/instafluff
+
+> *Come and hang out with us at the Comfiest Corner on Twitch!*
+
+> https://twitch.tv/instafluff
+ 
+# Instructions
+1. [Install the latest version of SMAPI](https://smapi.io/).
+2. [Install the Sleepless in Stardew mod from Nexus mods](https://www.nexusmods.com/stardewvalley/mods/5445).
+3. Run the game using SMAPI.
 
 Thank you to all the comfiest holes to helped get started with this Stardew Valley mod!
 
