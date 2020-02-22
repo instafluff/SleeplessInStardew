@@ -2,7 +2,7 @@
 
 Just add this mod and extend your sleep time to 6am instead of 2am.
 
-# SleeplessInStardew
+# Sleepless in Stardew
 We built this Stardew Valley Late-Night Get-More-Done Sleepless Insomniac Productivity Powernap Mod live on Twitch at the Comfy Corner!
 
 ## Instafluff ##
