@@ -30,6 +30,7 @@ namespace SleeplessInStardew
 		}
 
 		private Color savedEveningColor = Color.Transparent;
+		private bool isLateNight = false;
 
 		private void GameLoop_UpdateTicked( object sender, UpdateTickedEventArgs e )
 		{
@@ -48,9 +49,10 @@ namespace SleeplessInStardew
 				{
 					Game1.timeOfDay = Game1.timeOfDay - 2400;
 					this.savedEveningColor = Game1.outdoorLight;
+					isLateNight = true;
 				}
 
-				if( Game1.timeOfDay == 600 )
+				if( isLateNight && Game1.timeOfDay == 600 )
 				{
 					// Make it pass out if the time reached 6am
 					Game1.timeOfDay = Game1.timeOfDay + 2400;
@@ -79,6 +81,8 @@ namespace SleeplessInStardew
 		{
 			//this.Log( "Day Started" );
 			//this.Log( Game1.outdoorLight.ToString() );
+			//Game1.timeOfDay = 2550;
+			isLateNight = false;
 		}
 
 		public void Log( string message ) {
