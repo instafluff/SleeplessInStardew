@@ -20,7 +20,9 @@ namespace SleeplessInStardew
 		/// <param name="helper">Provides simplified APIs for writing mods.</param>
 		public override void Entry( IModHelper helper )
 		{
+			helper.Events.Input.CursorMoved += this.OnCursorMoved;
 			helper.Events.Input.ButtonPressed += this.OnButtonPressed;
+			helper.Events.Input.ButtonReleased += this.OnButtonReleased;
 			helper.Events.GameLoop.TimeChanged += GameLoop_TimeChanged;
 			helper.Events.GameLoop.DayStarted += GameLoop_DayStarted;
 			helper.Events.GameLoop.DayEnding += GameLoop_DayEnding;
@@ -32,11 +34,11 @@ namespace SleeplessInStardew
 		private Color savedEveningColor = Color.Transparent;
 		private bool isLateNight = false;
 
-		private void GameLoop_UpdateTicked( object sender, UpdateTickedEventArgs e )
+		private void GameLoop_UpdateTicking( object sender, UpdateTickingEventArgs e )
 		{
 		}
 
-		private void GameLoop_UpdateTicking( object sender, UpdateTickingEventArgs e )
+		private void GameLoop_UpdateTicked( object sender, UpdateTickedEventArgs e )
 		{
 		}
 
@@ -81,7 +83,10 @@ namespace SleeplessInStardew
 			//this.Log( "Day Started" );
 			//this.Log( Game1.outdoorLight.ToString() );
 			//Game1.timeOfDay = 2550;
-			//Game1.timeOfDay = 340;
+			//if( Game1.IsMasterGame )
+			//{
+			//	Game1.timeOfDay = 340;
+			//}
 			isLateNight = false;
 		}
 
@@ -95,26 +100,42 @@ namespace SleeplessInStardew
 			if( isLateNight && e.OldTime == 550 && e.NewTime == 600 )
 			{
 				// Make it pass out if the time reached 6am
-				Game1.timeOfDay = 2600;
+				if( Game1.IsMasterGame )
+				{
+					Game1.timeOfDay = 2600;
+				}
 				isLateNight = false;
 			}
 			if( e.NewTime == 400 )
 			{
 				Game1.addHUDMessage( new HUDMessage( "It's getting very late...", 2 ) );
 				Game1.playSound( "junimoMeep1" );
+				if( Game1.IsMultiplayer )
+				{
+					Game1.chatBox.addInfoMessage( "LATE-NIGHT ALERT: It is 4:00am!" );
+				}
 			}
 			if( e.NewTime == 500 )
 			{
 				Game1.addHUDMessage( new HUDMessage( "It's getting very very late...", 2 ) );
 				Game1.playSound( "junimoMeep1" );
+				if( Game1.IsMultiplayer )
+				{
+					Game1.chatBox.addInfoMessage( "LATE-NIGHT ALERT: It is 4:30am!" );
+				}
 			}
 			if( e.NewTime == 530 )
 			{
 				Game1.addHUDMessage( new HUDMessage( "So... sleepy.....", 2 ) );
 				Game1.playSound( "junimoMeep1" );
+				if( Game1.IsMultiplayer )
+				{
+					Game1.chatBox.addInfoMessage( "LATE-NIGHT ALERT: It is 5am!" );
+				}
 			}
 		}
 
+		private bool isClockPressed = false;
 
 		/*********
         ** Private methods
@@ -130,6 +151,56 @@ namespace SleeplessInStardew
 
 			// print button presses to the console window
 			//this.Log( $"{Game1.player.Name} pressed {e.Button}." );
+			//this.Log( $"{e.Cursor.ScreenPixels.X} {e.Cursor.ScreenPixels.Y} {Game1.viewport.Width} {Game1.viewport.Height}" );
+
+			// resolution 1600x900
+			// clock center is (1336, 117)
+			// clock radius is 1336 - 1225 = 111
+			// box left (1343, 14)
+			// box rightbottom (1576, 211)
+			float clockRadius = 111f / 1600f;
+			Vector2 clockCenter = new Vector2( 1336f / 1600f, 117f / 900f );
+			Vector2 boxTopLeft = new Vector2( 1343f / 1600f, 14f / 900f );
+			Vector2 boxBottomRight = new Vector2( 1576f / 1600f, 211f / 900f );
+			Vector2 cursorRelative = new Vector2( e.Cursor.ScreenPixels.X / (float)Game1.viewport.Width, e.Cursor.ScreenPixels.Y / (float)Game1.viewport.Height );
+
+			if( e.Button.IsUseToolButton() && Vector2.DistanceSquared( cursorRelative, clockCenter ) < clockRadius * clockRadius ||
+				( boxTopLeft.X <= cursorRelative.X && cursorRelative.X <= boxBottomRight.X &&
+				  boxTopLeft.Y <= cursorRelative.Y && cursorRelative.Y <= boxBottomRight.Y ) )
+			{
+				this.Helper.Input.Suppress( SButton.MouseLeft );
+				isClockPressed = true;
+			}
+		}
+
+		private void OnButtonReleased( object sender, ButtonReleasedEventArgs e )
+		{
+			if( !Context.IsWorldReady )
+				return;
+
+			if( e.Button.IsUseToolButton() && isClockPressed )
+			{
+				float clockRadius = 111f / 1600f;
+				Vector2 clockCenter = new Vector2( 1336f / 1600f, 117f / 900f );
+				Vector2 boxTopLeft = new Vector2( 1343f / 1600f, 14f / 900f );
+				Vector2 boxBottomRight = new Vector2( 1576f / 1600f, 211f / 900f );
+				Vector2 cursorRelative = new Vector2( e.Cursor.ScreenPixels.X / (float)Game1.viewport.Width, e.Cursor.ScreenPixels.Y / (float)Game1.viewport.Height );
+
+				if( Vector2.DistanceSquared( cursorRelative, clockCenter ) < clockRadius * clockRadius ||
+					( boxTopLeft.X <= cursorRelative.X && cursorRelative.X <= boxBottomRight.X &&
+					  boxTopLeft.Y <= cursorRelative.Y && cursorRelative.Y <= boxBottomRight.Y ) )
+				{
+					Game1.isTimePaused = !Game1.isTimePaused;
+					Game1.addHUDMessage( new HUDMessage( Game1.isTimePaused ? "Time is stopped." : "Time is flowing.", 2 ) );
+					Game1.playSound( "junimoMeep1" );
+				}
+				isClockPressed = false;
+			}
+		}
+
+		private void OnCursorMoved( object sender, CursorMovedEventArgs e )
+		{
+			//this.Log( $"{Game1.mouse}" );
 		}
 	}
 }
