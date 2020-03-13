@@ -81,6 +81,7 @@ namespace SleeplessInStardew
 			//this.Log( "Day Started" );
 			//this.Log( Game1.outdoorLight.ToString() );
 			//Game1.timeOfDay = 2550;
+			//Game1.timeOfDay = 340;
 			isLateNight = false;
 		}
 
@@ -94,8 +95,23 @@ namespace SleeplessInStardew
 			if( isLateNight && e.OldTime == 550 && e.NewTime == 600 )
 			{
 				// Make it pass out if the time reached 6am
-				Game1.timeOfDay = Game1.timeOfDay + 2400;
+				Game1.timeOfDay = 2600;
 				isLateNight = false;
+			}
+			if( e.NewTime == 400 )
+			{
+				Game1.addHUDMessage( new HUDMessage( "It's getting very late...", 2 ) );
+				Game1.playSound( "junimoMeep1" );
+			}
+			if( e.NewTime == 500 )
+			{
+				Game1.addHUDMessage( new HUDMessage( "It's getting very very late...", 2 ) );
+				Game1.playSound( "junimoMeep1" );
+			}
+			if( e.NewTime == 530 )
+			{
+				Game1.addHUDMessage( new HUDMessage( "So... sleepy.....", 2 ) );
+				Game1.playSound( "junimoMeep1" );
 			}
 		}
 
