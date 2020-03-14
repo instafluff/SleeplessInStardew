@@ -43,6 +43,10 @@ namespace SleeplessInStardew
 		{
 			wasPaused = Game1.paused;
 			Game1.paused = Game1.paused || isPaused;
+			if( isHoveringClock )
+			{
+				Game1.mouseCursor = 2;
+			}
 		}
 
 		private void Display_RenderedHud( object sender, RenderedHudEventArgs e )
@@ -151,6 +155,7 @@ namespace SleeplessInStardew
 			}
 		}
 
+		private bool isHoveringClock = false;
 		private bool isClockPressed = false;
 
 		/*********
@@ -219,6 +224,27 @@ namespace SleeplessInStardew
 
 		private void OnCursorMoved( object sender, CursorMovedEventArgs e )
 		{
+			isHoveringClock = false;
+
+			if( !Context.IsWorldReady )
+				return;
+
+			if( !Context.IsPlayerFree )
+				return;
+
+			float clockRadius = 111f / 1600f;
+			Vector2 clockCenter = new Vector2( 1336f / 1600f, 117f / 900f );
+			Vector2 boxTopLeft = new Vector2( 1343f / 1600f, 14f / 900f );
+			Vector2 boxBottomRight = new Vector2( 1576f / 1600f, 211f / 900f );
+			Vector2 cursorRelative = new Vector2( e.NewPosition.ScreenPixels.X / (float)Game1.viewport.Width, e.NewPosition.ScreenPixels.Y / (float)Game1.viewport.Height );
+
+			if( Vector2.DistanceSquared( cursorRelative, clockCenter ) < clockRadius * clockRadius ||
+				( boxTopLeft.X <= cursorRelative.X && cursorRelative.X <= boxBottomRight.X &&
+				  boxTopLeft.Y <= cursorRelative.Y && cursorRelative.Y <= boxBottomRight.Y ) )
+			//if( Vector2.DistanceSquared( cursorRelative, clockCenter ) < clockRadius * clockRadius )
+			{
+				isHoveringClock = true;
+			}
 			//this.Log( $"{Game1.mouse}" );
 		}
 	}
