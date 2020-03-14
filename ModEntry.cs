@@ -29,10 +29,26 @@ namespace SleeplessInStardew
 			helper.Events.GameLoop.OneSecondUpdateTicking += GameLoop_OneSecondUpdateTicking;
 			helper.Events.GameLoop.UpdateTicking += GameLoop_UpdateTicking;
 			helper.Events.GameLoop.UpdateTicked += GameLoop_UpdateTicked;
+			helper.Events.Display.RenderingHud += Display_RenderingHud;
+			helper.Events.Display.RenderedHud += Display_RenderedHud;
 		}
+
+		private bool isPaused = false;
+		private bool wasPaused = false;
 
 		private Color savedEveningColor = Color.Transparent;
 		private bool isLateNight = false;
+
+		private void Display_RenderingHud( object sender, RenderingHudEventArgs e )
+		{
+			wasPaused = Game1.paused;
+			Game1.paused = Game1.paused || isPaused;
+		}
+
+		private void Display_RenderedHud( object sender, RenderedHudEventArgs e )
+		{
+			Game1.paused = wasPaused;
+		}
 
 		private void GameLoop_UpdateTicking( object sender, UpdateTickingEventArgs e )
 		{
@@ -149,6 +165,9 @@ namespace SleeplessInStardew
 			if( !Context.IsWorldReady )
 				return;
 
+			if( !Context.IsPlayerFree )
+				return;
+
 			// print button presses to the console window
 			//this.Log( $"{Game1.player.Name} pressed {e.Button}." );
 			//this.Log( $"{e.Cursor.ScreenPixels.X} {e.Cursor.ScreenPixels.Y} {Game1.viewport.Width} {Game1.viewport.Height}" );
@@ -178,7 +197,7 @@ namespace SleeplessInStardew
 			if( !Context.IsWorldReady )
 				return;
 
-			if( e.Button.IsUseToolButton() && isClockPressed )
+			if( isClockPressed && e.Button.IsUseToolButton() )
 			{
 				float clockRadius = 111f / 1600f;
 				Vector2 clockCenter = new Vector2( 1336f / 1600f, 117f / 900f );
@@ -190,8 +209,8 @@ namespace SleeplessInStardew
 					( boxTopLeft.X <= cursorRelative.X && cursorRelative.X <= boxBottomRight.X &&
 					  boxTopLeft.Y <= cursorRelative.Y && cursorRelative.Y <= boxBottomRight.Y ) )
 				{
-					Game1.isTimePaused = !Game1.isTimePaused;
-					Game1.addHUDMessage( new HUDMessage( Game1.isTimePaused ? "Time is stopped." : "Time is flowing.", 2 ) );
+					isPaused = !isPaused;
+					Game1.addHUDMessage( new HUDMessage( isPaused ? "Time is stopped." : "Time is flowing.", 2 ) );
 					Game1.playSound( "junimoMeep1" );
 				}
 				isClockPressed = false;
