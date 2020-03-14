@@ -32,17 +32,12 @@ namespace SleeplessInStardew
 			helper.Events.Display.RenderingHud += Display_RenderingHud;
 			helper.Events.Display.RenderedHud += Display_RenderedHud;
 		}
-
-		private bool isPaused = false;
-		private bool wasPaused = false;
-
+		
 		private Color savedEveningColor = Color.Transparent;
 		private bool isLateNight = false;
 
 		private void Display_RenderingHud( object sender, RenderingHudEventArgs e )
 		{
-			wasPaused = Game1.paused;
-			Game1.paused = Game1.paused || isPaused;
 			if( isHoveringClock )
 			{
 				Game1.mouseCursor = 2;
@@ -51,7 +46,6 @@ namespace SleeplessInStardew
 
 		private void Display_RenderedHud( object sender, RenderedHudEventArgs e )
 		{
-			Game1.paused = wasPaused;
 		}
 
 		private void GameLoop_UpdateTicking( object sender, UpdateTickingEventArgs e )
@@ -214,8 +208,8 @@ namespace SleeplessInStardew
 					( boxTopLeft.X <= cursorRelative.X && cursorRelative.X <= boxBottomRight.X &&
 					  boxTopLeft.Y <= cursorRelative.Y && cursorRelative.Y <= boxBottomRight.Y ) )
 				{
-					isPaused = !isPaused;
-					Game1.addHUDMessage( new HUDMessage( isPaused ? "Time is stopped." : "Time is flowing.", 2 ) );
+					Game1.isTimePaused = !Game1.isTimePaused;
+					Game1.addHUDMessage( new HUDMessage( Game1.isTimePaused ? "Time is stopped." : "Time is flowing.", 2 ) );
 					Game1.playSound( "junimoMeep1" );
 				}
 				isClockPressed = false;
