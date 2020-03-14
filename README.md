@@ -2,6 +2,8 @@
 
 Just add this mod and extend your sleep time to 6am instead of 2am.
 
+Now with Clock Click Time Toggle! Click the clock to freeze/unfreeze time!
+
 # Sleepless in Stardew
 We built this Stardew Valley Late-Night Get-More-Done Sleep-less Insomniac Productivity Powernap Mod live on Twitch at the Comfy Corner!
 
