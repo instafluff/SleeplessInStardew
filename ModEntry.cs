@@ -27,14 +27,40 @@ namespace SleeplessInStardew
 			helper.Events.GameLoop.DayStarted += GameLoop_DayStarted;
 			helper.Events.GameLoop.DayEnding += GameLoop_DayEnding;
 			helper.Events.GameLoop.OneSecondUpdateTicking += GameLoop_OneSecondUpdateTicking;
+			helper.Events.GameLoop.OneSecondUpdateTicked += GameLoop_OneSecondUpdateTicked;
 			helper.Events.GameLoop.UpdateTicking += GameLoop_UpdateTicking;
 			helper.Events.GameLoop.UpdateTicked += GameLoop_UpdateTicked;
 			helper.Events.Display.RenderingHud += Display_RenderingHud;
 			helper.Events.Display.RenderedHud += Display_RenderedHud;
+			helper.Events.Multiplayer.PeerContextReceived += Multiplayer_PeerContextReceived;
+			helper.Events.Multiplayer.PeerDisconnected += Multiplayer_PeerDisconnected;
 		}
-		
+
+		private void Multiplayer_PeerContextReceived( object sender, PeerContextReceivedEventArgs e )
+		{
+			//this.Log( "Context from ID: " + e.Peer.PlayerID );
+			//this.Log( Game1.IsMasterGame ? "Master" : "Not-Master" );
+			//this.Log( Game1.IsMultiplayer ? "Multi" : "Single" );
+			//this.Log( Game1.IsClient ? "Client" : "Not-Client" );
+			//this.Log( Game1.IsServer ? "Server" : "Not-Server" );
+
+			if( !Context.IsMainPlayer )
+				return;
+		}
+
+		private void Multiplayer_PeerDisconnected( object sender, PeerDisconnectedEventArgs e )
+		{
+			//this.Log( "Disconnect ID: " + e.Peer.PlayerID );
+
+			// Nintendo Switch $300 = 7500 Bells
+			// $1 = 25 Bells
+		}
+
 		private Color savedEveningColor = Color.Transparent;
 		private bool isLateNight = false;
+		private bool isTimeFrozen = false;
+		private bool hasPassedOut = false;
+		private int savedTime = 0;
 
 		private void Display_RenderingHud( object sender, RenderingHudEventArgs e )
 		{
@@ -42,14 +68,32 @@ namespace SleeplessInStardew
 			{
 				Game1.mouseCursor = 2;
 			}
+			if( isTimeFrozen )
+			{
+				savedTime = Game1.timeOfDay;
+				Game1.isTimePaused = true;
+			}
 		}
 
 		private void Display_RenderedHud( object sender, RenderedHudEventArgs e )
 		{
+			if( isTimeFrozen )
+			{
+				Game1.timeOfDay = savedTime;
+				Game1.isTimePaused = false;
+			}
 		}
 
 		private void GameLoop_UpdateTicking( object sender, UpdateTickingEventArgs e )
 		{
+			//if( isTimeFrozen )
+			//{
+			//	Game1.gameTimeInterval = 0;
+			//	//Game1.UpdateGameClock( Game1.currentGameTime );
+
+			//	// NOTE: Can use this function to skip time super fast!
+			//	//Game1.performTenMinuteClockUpdate();
+			//}
 		}
 
 		private void GameLoop_UpdateTicked( object sender, UpdateTickedEventArgs e )
@@ -58,7 +102,13 @@ namespace SleeplessInStardew
 
 		private void GameLoop_OneSecondUpdateTicking( object sender, OneSecondUpdateTickingEventArgs e )
 		{
-			if( Context.IsWorldReady )
+			if( !Context.IsWorldReady )
+				return;
+
+			if( !Context.IsMainPlayer )
+				return;
+
+			if( !hasPassedOut )
 			{
 				// Skip the pass-out check time
 				if( Game1.timeOfDay >= 2550 )
@@ -66,25 +116,32 @@ namespace SleeplessInStardew
 					Game1.timeOfDay = Game1.timeOfDay - 2400;
 					this.savedEveningColor = Game1.outdoorLight;
 				}
+			}
 
-				if( Game1.timeOfDay < 600 )
-				{
-					// Set the outdoor light til morning
-					float timeTilMorning = 400f; // From 2am til 6am
-					var eveningColorVec = savedEveningColor.ToVector4();
-					var ambientColorVec = Game1.ambientLight.ToVector4();
-					float progressTime = (float)Math.Abs( ( Game1.timeOfDay <= 600 ? Game1.timeOfDay + 2400 : Game1.timeOfDay ) - 3000 ) / timeTilMorning;
-					Color progressColor = Color.Lerp( savedEveningColor, Game1.morningColor, 1.0f - progressTime );
-					var progressVec = progressColor.ToVector4();
-					Game1.outdoorLight = new Color( new Vector4( ambientColorVec.X * progressVec.X, ambientColorVec.Y * progressVec.Y, ambientColorVec.Z * progressVec.Z, ambientColorVec.W * progressVec.W ) );
-					isLateNight = true;
-				}
-				else
-				{
-					isLateNight = false;
-				}
+			if( Game1.timeOfDay < 600 )
+			{
+				// Set the outdoor light til morning
+				float timeTilMorning = 400f; // From 2am til 6am
+				var eveningColorVec = savedEveningColor.ToVector4();
+				var ambientColorVec = Game1.ambientLight.ToVector4();
+				float progressTime = (float)Math.Abs( ( Game1.timeOfDay <= 600 ? Game1.timeOfDay + 2400 : Game1.timeOfDay ) - 3000 ) / timeTilMorning;
+				Color progressColor = Color.Lerp( savedEveningColor, Game1.morningColor, 1.0f - progressTime );
+				var progressVec = progressColor.ToVector4();
+				Game1.outdoorLight = new Color( new Vector4( ambientColorVec.X * progressVec.X, ambientColorVec.Y * progressVec.Y, ambientColorVec.Z * progressVec.Z, ambientColorVec.W * progressVec.W ) );
+				isLateNight = true;
+			}
+			else
+			{
+				isLateNight = false;
 			}
 			//this.Log( "Tick!" );
+		}
+
+		private void GameLoop_OneSecondUpdateTicked( object sender, OneSecondUpdateTickedEventArgs e )
+		{
+			//this.Log( "Ticked: " + e.Ticks );
+			if( !Context.IsMainPlayer )
+				return;
 		}
 
 		private void GameLoop_DayEnding( object sender, DayEndingEventArgs e )
@@ -99,24 +156,60 @@ namespace SleeplessInStardew
 			//Game1.timeOfDay = 2550;
 			//if( Game1.IsMasterGame )
 			//{
-			//	Game1.timeOfDay = 340;
+			//if( Context.IsMainPlayer )
+			//{
+			//	Game1.timeOfDay = 540;
 			//}
+			//}
+			//this.Log( Game1.IsMasterGame ? "Master" : "Not-Master" );
+			//this.Log( Game1.IsMultiplayer ? "Multi" : "Single" );
+			//this.Log( Game1.IsClient ? "Client" : "Not-Client" );
+			//this.Log( Game1.IsServer ? "Sever" : "Not-Server" );
 			isLateNight = false;
+			hasPassedOut = false;
 		}
 
 		public void Log( string message ) {
 			this.Monitor.Log( message, LogLevel.Debug );
 		}
 
+		private bool skipTimeChange = false;
+
 		private void GameLoop_TimeChanged( object sender, TimeChangedEventArgs e )
 		{
+			if( !Context.IsWorldReady )
+				return;
+
+			if( Context.IsMainPlayer )
+			{
+				if( isTimeFrozen )
+				{
+					if( skipTimeChange )
+					{
+						skipTimeChange = false;
+					}
+					else
+					{
+						skipTimeChange = true;
+						Game1.timeOfDay = e.OldTime;
+					}
+				}
+			}
+
 			//this.Log( $"{e.OldTime} -> {e.NewTime}" );
-			if( isLateNight && e.OldTime == 550 && e.NewTime == 600 )
+			if( !isTimeFrozen && isLateNight && e.OldTime == 550 && e.NewTime == 600 )
 			{
 				// Make it pass out if the time reached 6am
-				if( Game1.IsMasterGame )
+				if( Context.IsMainPlayer )
 				{
-					Game1.timeOfDay = 2600;
+					hasPassedOut = true;
+					Game1.timeOfDay = 3000;//2600;
+					Game1.PassOutNewDay();
+					if( Context.IsMultiplayer )
+					{
+						Game1.server.updateLobbyData();
+					}
+					Game1.performTenMinuteClockUpdate();
 				}
 				isLateNight = false;
 			}
@@ -167,6 +260,9 @@ namespace SleeplessInStardew
 			if( !Context.IsPlayerFree )
 				return;
 
+			if( !Context.IsMainPlayer )
+				return;
+
 			// print button presses to the console window
 			//this.Log( $"{Game1.player.Name} pressed {e.Button}." );
 			//this.Log( $"{e.Cursor.ScreenPixels.X} {e.Cursor.ScreenPixels.Y} {Game1.viewport.Width} {Game1.viewport.Height}" );
@@ -196,6 +292,9 @@ namespace SleeplessInStardew
 			if( !Context.IsWorldReady )
 				return;
 
+			if( !Context.IsMainPlayer )
+				return;
+
 			if( isClockPressed && e.Button.IsUseToolButton() )
 			{
 				float clockRadius = 111f / 1600f;
@@ -208,8 +307,9 @@ namespace SleeplessInStardew
 					( boxTopLeft.X <= cursorRelative.X && cursorRelative.X <= boxBottomRight.X &&
 					  boxTopLeft.Y <= cursorRelative.Y && cursorRelative.Y <= boxBottomRight.Y ) )
 				{
-					Game1.isTimePaused = !Game1.isTimePaused;
-					Game1.addHUDMessage( new HUDMessage( Game1.isTimePaused ? "Time is stopped." : "Time is flowing.", 2 ) );
+					//Game1.isTimePaused = !Game1.isTimePaused;
+					isTimeFrozen = !isTimeFrozen;
+					Game1.addHUDMessage( new HUDMessage( isTimeFrozen ? "Time is stopped." : "Time is flowing.", 2 ) );
 					Game1.playSound( "junimoMeep1" );
 				}
 				isClockPressed = false;
@@ -224,6 +324,9 @@ namespace SleeplessInStardew
 				return;
 
 			if( !Context.IsPlayerFree )
+				return;
+
+			if( !Context.IsMainPlayer )
 				return;
 
 			float clockRadius = 111f / 1600f;
