@@ -2,7 +2,7 @@
 
 Just add this mod and extend your sleep time to 6am instead of 2am.
 
-Now with Clock Click Time Toggle! Click the clock to freeze/unfreeze time!
+Now with Clock Click Time Toggle and Multiplayer support! Click the clock to freeze/unfreeze time!
 
 # Sleepless in Stardew
 We built this Stardew Valley Late-Night Get-More-Done Sleep-less Insomniac Productivity Powernap Mod live on Twitch at the Comfy Corner!
@@ -38,7 +38,7 @@ We built this Stardew Valley Late-Night Get-More-Done Sleep-less Insomniac Produ
 > Your pet will love you just the same. <3
 
 ***Will this work in Multiplayer?***
-> I am planning to add multiplayer-support soon!
+> As of version 1.6.0, this works! And only the host needs the mod for this to work!
 
 # Credits
 Thank you to all the comfiest holes to helped get started with this Stardew Valley mod!
